@@ -1,0 +1,255 @@
+.l_c{
+  display: flex;
+  flex-direction: row;
+}
+/* .vl {
+    border-left: 6px solid green;
+    height: 250px;
+    position: absolute;
+    left: 25%;
+    margin-left: -3px;
+    top: 5;
+  }
+  .v2 {
+    border-left: 6px solid green;
+    height: 250px;
+    position: absolute;
+    left: 5%;
+    margin-left: -3px;
+    top: 5;
+  }
+  .v3 {
+    border-left: 6px solid green;
+    height: 110px;
+    position: absolute;
+    left: 18%;
+    margin-left: -3px;
+    margin-top: 135px;
+    top: 5;
+  }
+  .v4 {
+    border-left: 6px solid green;
+    height: 110px;
+    position: absolute;
+    left: 11%;
+    margin-left: -3px;
+    margin-top: 135px;
+    top: 5;
+  }
+  div.store-name {
+    white-space: nowrap; 
+    width: 20%; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 3px solid green;
+    margin-left: 4.5%;
+  }
+  .store-name h2{
+    padding-left: 48px;
+  }
+  .horizontal2{ 
+    border: 3px solid green;
+    border-radius: 5px;
+    margin-left: 4.3%;
+    margin-top: 105px;
+    width: 20%;
+  } 
+  .horizontal1{
+    border: 3px solid green;
+    width: 95px;
+    margin-left: 165px;
+    margin-top: 63px;
+  } */
+  .log{
+  text-align: center;
+  }
+  .cart{
+    margin-left: 90%;
+  }
+.store{
+    padding-bottom: 20px;
+    
+  }
+.form{
+
+    position: relative;
+}
+
+.form .fa-search{
+
+    position: absolute;
+    top:20px;
+    left: 20px;
+    color: #9ca3af;
+
+}
+
+.form span{
+
+    position: absolute;
+    right: 17px;
+    top: 13px;
+    padding: 2px;
+    border-left: 1px solid #d1d5db;
+
+}
+
+.left-pan{
+    padding-left: 7px;
+}
+
+.left-pan i{
+   
+   padding-left: 10px;
+}
+
+.form-input{
+
+    height: 55px;
+    text-indent: 33px;
+    border-radius: 10px;
+}
+
+.form-input:focus{
+
+    box-shadow: none;
+    border:none;
+}
+* {box-sizing:border-box}
+
+/* slide show start */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html,
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  background-color: #e3e5e8;
+}
+.container{
+  background-color: #e3e5e8;
+}
+
+.card {
+  margin-left: 200px;
+  width: 700px;
+  height: 400px;
+  overflow: hidden;
+
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/*Light blue cover above the slide show*/
+.card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 900;
+
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(140, 22, 115, 0.2);
+}
+
+.card_part_card_part-one{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 7;
+
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  
+  transform: translateX( 700px );
+  background-image: url( https://in.images.search.yahoo.com/images/view;_ylt=AwrKCxe95cNkycEvp1q9HAx.;_ylu=c2VjA3NyBHNsawNpbWcEb2lkA2MzNWFkN2ZlZmQ0YWFiNDM3ZDk5YWJlZTc2NmNiYTkwBGdwb3MDMwRpdANiaW5n?back=https%3A%2F%2Fin.images.search.yahoo.com%2Fsearch%2Fimages%3Fp%3Dphoto%26type%3DE210IN826G0%26fr%3Dmcafee%26fr2%3Dpiv-web%26tab%3Dorganic%26ri%3D3&w=2711&h=1707&imgurl=migrationphoto.files.wordpress.com%2F2015%2F10%2Ffallwayland20101.jpg&rurl=https%3A%2F%2Fmigrationphoto.wordpress.com%2F2015%2F10%2F25%2Fphoto-close-to-home%2F&size=827.5KB&p=photo&oid=c35ad7fefd4aab437d99abee766cba90&fr2=piv-web&fr=mcafee&tt=Photo+Close+to+Home+%E2%80%93+Migration+Photo&b=0&ni=21&no=3&ts=&tab=organic&sigr=2NQxcfoFYGqZ&sigb=JoGFGzolBaho&sigi=_nKNZG3QaNW0&sigt=emEvQB5t6QLu&.crumb=vcgH2VcaP3B&fr=mcafee&fr2=piv-web&type=E210IN826G0 );
+  
+  animation: opaqTransition 28s cubic-bezier(0, 0, 0, 0.97) infinite;
+}
+
+
+.card_part_card_part-two {
+  z-index: 6;
+  background-image: url( https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNPqTt06iIUTaKPpZDpv3CX3RDQmcFMOOq8g&usqp=CAU );
+  animation-delay: 1s;
+}
+
+.card_part_card_part-three {
+  z-index: 5;
+  background-image: url( https://github.com/Flat-Pixels/assets_hosting/blob/master/picture_slides/3.jpg?raw=true );
+  animation-delay: 14s;
+}
+
+.card_part_card_part-four {
+  z-index: 4;
+  background-image: url( https://github.com/Flat-Pixels/assets_hosting/blob/master/picture_slides/4.jpg?raw=true );
+  animation-delay: 21s;
+}
+
+
+@keyframes opaqTransition {
+  3% { transform: translateX( 0 ); }
+  25% { transform: translateX( 0 ); }
+  28% { transform: translateX( -700px ); }
+  100% { transform: translateX( -700px ); }
+}
+/* store image */
+.content_img{
+  position: relative;
+  float: left;
+  margin-right: 10px;
+  padding-left: 10px;
+  padding-bottom: 20px;
+}
+
+/* Child Text Container */
+.content_img div{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgb(4, 255, 0);
+  color: rgb(0, 0, 0);
+  margin-bottom: 20px;
+  font-family: sans-serif;
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transition: visibility 0s, opacity 0.5s linear; 
+  transition: visibility 0s, opacity 0.5s linear;
+}
+
+/* Hover on Parent Container */
+.content_img:hover{
+  cursor: pointer;
+}
+
+.content_img:hover div{
+  width: 150px;
+  padding: 8px 15px;
+  visibility: visible;
+  opacity: 0.7; 
+}
+/* categories */
+
+.cate img {
+  border-radius: 50%;
+  height: 50px;
+  padding-left: 20px;
+}
+.categories{
+  display: flex;
+  flex-direction: row;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+}
