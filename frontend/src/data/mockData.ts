@@ -1,4 +1,4 @@
-import { Product, Shop, Order, User, Category } from '../types';
+import { Product, Shop, Order, User, Category, Review } from '../types';
 
 // Helper to create a random distance
 const randomDistance = () => Number((Math.random() * 5 + 0.5).toFixed(1));
@@ -13,6 +13,7 @@ export const shops: Shop[] = [
     rating: 4.5,
     distance: randomDistance(),
     categories: ['groceries', 'home'],
+    isOpen: true,
   },
   {
     id: '2',
@@ -22,6 +23,7 @@ export const shops: Shop[] = [
     rating: 4.2,
     distance: randomDistance(),
     categories: ['electronics'],
+    isOpen: true,
   },
   {
     id: '3',
@@ -31,6 +33,7 @@ export const shops: Shop[] = [
     rating: 4.7,
     distance: randomDistance(),
     categories: ['clothes', 'footwear'],
+    isOpen: false,
   },
   {
     id: '4',
@@ -40,6 +43,7 @@ export const shops: Shop[] = [
     rating: 4.8,
     distance: randomDistance(),
     categories: ['groceries'],
+    isOpen: true,
   },
   {
     id: '5',
@@ -49,7 +53,57 @@ export const shops: Shop[] = [
     rating: 4.0,
     distance: randomDistance(),
     categories: ['electronics'],
+    isOpen: false,
   },
+];
+
+// Mock reviews
+export const reviews: Review[] = [
+  {
+    id: '1',
+    productId: '1',
+    userId: 'user1',
+    userName: 'John Doe',
+    rating: 5,
+    comment: 'These bananas are amazing! Perfectly ripe and very fresh.',
+    createdAt: '2024-03-15T10:30:00Z'
+  },
+  {
+    id: '2',
+    productId: '1',
+    userId: 'user2',
+    userName: 'Jane Smith',
+    rating: 4,
+    comment: 'Good quality bananas, but a bit expensive.',
+    createdAt: '2024-03-14T15:45:00Z'
+  },
+  {
+    id: '3',
+    productId: '2',
+    userId: 'user3',
+    userName: 'Mike Johnson',
+    rating: 5,
+    comment: 'Great smartphone with excellent camera quality.',
+    createdAt: '2024-03-13T09:20:00Z'
+  },
+  {
+    id: '4',
+    productId: '2',
+    userId: 'user4',
+    userName: 'Sarah Wilson',
+    rating: 4,
+    comment: 'Good performance but battery life could be better.',
+    createdAt: '2024-03-12T16:30:00Z'
+  },
+  {
+    id: '5',
+    productId: '3',
+    userId: 'user5',
+    userName: 'David Brown',
+    rating: 5,
+    comment: 'Perfect fit and very comfortable jeans.',
+    createdAt: '2024-03-11T11:15:00Z'
+  }
 ];
 
 // Products
@@ -65,6 +119,7 @@ export const products: Product[] = [
     rating: 4.6,
     deliveryAvailable: true,
     pickupAvailable: true,
+    reviews: reviews.filter(r => r.productId === '1')
   },
   {
     id: '2',
@@ -77,6 +132,7 @@ export const products: Product[] = [
     rating: 4.8,
     deliveryAvailable: true,
     pickupAvailable: true,
+    reviews: reviews.filter(r => r.productId === '2')
   },
   {
     id: '3',
@@ -89,6 +145,7 @@ export const products: Product[] = [
     rating: 4.4,
     deliveryAvailable: false,
     pickupAvailable: true,
+    reviews: reviews.filter(r => r.productId === '3')
   },
   {
     id: '4',
@@ -101,6 +158,7 @@ export const products: Product[] = [
     rating: 4.9,
     deliveryAvailable: true,
     pickupAvailable: true,
+    reviews: []
   },
   {
     id: '5',
@@ -113,6 +171,7 @@ export const products: Product[] = [
     rating: 4.7,
     deliveryAvailable: true,
     pickupAvailable: true,
+    reviews: []
   },
   {
     id: '6',
@@ -125,6 +184,7 @@ export const products: Product[] = [
     rating: 4.3,
     deliveryAvailable: true,
     pickupAvailable: true,
+    reviews: []
   },
   {
     id: '7',
@@ -137,6 +197,7 @@ export const products: Product[] = [
     rating: 4.5,
     deliveryAvailable: true,
     pickupAvailable: true,
+    reviews: []
   },
   {
     id: '8',
@@ -149,7 +210,8 @@ export const products: Product[] = [
     rating: 4.6,
     deliveryAvailable: false,
     pickupAvailable: true,
-  },
+    reviews: []
+  }
 ];
 
 // Categories with icons (icon names from Lucide React)
