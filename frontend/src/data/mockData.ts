@@ -16,7 +16,7 @@ export const shops: Shop[] = [
   },
   {
     id: '2',
-    name: 'ElectroHub',
+    name: 'ITHub',
     address: '456 Tech Ave, Uptown',
     location: { lat: 40.7228, lng: -74.016 },
     rating: 4.2,
