@@ -2,23 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Check, MapPin, Truck, PackageCheck, Store, QrCode, Phone, ArrowLeft } from 'lucide-react';
 import Button from '../components/ui/Button';
+import { useCart } from '../context/CartContext';
 
 interface OrderStatus {
-  step: 'placed' | 'confirmed' | 'out_for_delivery' | 'delivered';
+  step: 'placed' | 'confirmed' | 'ready_for_pickup' | 'out_for_delivery' | 'delivered' | 'completed';
   title: string;
   description: string;
   time: string;
   completed: boolean;
+  icon: React.ReactNode;
 }
 
 const OrderTrackingPage: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
+  const { items } = useCart();
   const [currentStep, setCurrentStep] = useState(1);
   const [isPickup, setIsPickup] = useState(false);
   
+  // Determine if order is pickup based on cart items
+  useEffect(() => {
+    const hasPickupItems = items.some(item => item.deliveryMethod === 'pickup');
+    setIsPickup(hasPickupItems);
+  }, [items]);
+
   // Simulate order progress
   useEffect(() => {
-    // For demo purposes, advance the order status every few seconds
     const interval = setInterval(() => {
       if (currentStep < 4) {
         setCurrentStep(prev => prev + 1);
@@ -30,11 +38,6 @@ const OrderTrackingPage: React.FC = () => {
     return () => clearInterval(interval);
   }, [currentStep]);
 
-  // For demo purposes, randomly choose pickup or delivery
-  useEffect(() => {
-    setIsPickup(Math.random() > 0.5);
-  }, []);
-
   const orderStatuses: OrderStatus[] = isPickup
     ? [
         {
@@ -43,6 +46,7 @@ const OrderTrackingPage: React.FC = () => {
           description: 'Your order has been received',
           time: '10:30 AM',
           completed: currentStep >= 1,
+          icon: <PackageCheck size={20} />
         },
         {
           step: 'confirmed',
@@ -50,20 +54,23 @@ const OrderTrackingPage: React.FC = () => {
           description: 'Shop is preparing your items',
           time: '10:35 AM',
           completed: currentStep >= 2,
+          icon: <Check size={20} />
         },
         {
-          step: 'out_for_delivery',
+          step: 'ready_for_pickup',
           title: 'Ready for Pickup',
           description: 'Your order is ready for collection',
           time: '11:00 AM',
           completed: currentStep >= 3,
+          icon: <Store size={20} />
         },
         {
-          step: 'delivered',
+          step: 'completed',
           title: 'Order Completed',
           description: 'You have picked up your order',
           time: '11:30 AM',
           completed: currentStep >= 4,
+          icon: <Check size={20} />
         },
       ]
     : [
@@ -73,6 +80,7 @@ const OrderTrackingPage: React.FC = () => {
           description: 'Your order has been received',
           time: '10:30 AM',
           completed: currentStep >= 1,
+          icon: <PackageCheck size={20} />
         },
         {
           step: 'confirmed',
@@ -80,6 +88,7 @@ const OrderTrackingPage: React.FC = () => {
           description: 'Shop is preparing your items',
           time: '10:35 AM',
           completed: currentStep >= 2,
+          icon: <Check size={20} />
         },
         {
           step: 'out_for_delivery',
@@ -87,6 +96,7 @@ const OrderTrackingPage: React.FC = () => {
           description: 'Your order is on the way',
           time: '11:00 AM',
           completed: currentStep >= 3,
+          icon: <Truck size={20} />
         },
         {
           step: 'delivered',
@@ -94,31 +104,26 @@ const OrderTrackingPage: React.FC = () => {
           description: 'Your order has been delivered',
           time: '11:30 AM',
           completed: currentStep >= 4,
+          icon: <Check size={20} />
         },
       ];
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-8">
-      <Link to="/" className="flex items-center text-gray-600 hover:text-blue-600 mb-6">
-        <ArrowLeft size={18} className="mr-1" />
-        <span>Back to Home</span>
-      </Link>
+    <main className="max-w-7xl mx-auto px-4 py-8">
+      <div className="flex items-center mb-8">
+        <Link to="/orders" className="flex items-center text-gray-600 hover:text-blue-600">
+          <ArrowLeft size={18} className="mr-2" />
+          Back to Orders
+        </Link>
+        <h1 className="text-2xl font-bold text-gray-900 ml-4">Order #{orderId}</h1>
+      </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-xl font-bold text-gray-900">Order Status</h1>
-          <div className="text-sm font-medium text-gray-600">
-            Order #{orderId}
-          </div>
-        </div>
-        
-        {/* Progress tracker */}
-        <div className="mb-8">
-          <div className="relative">
-            {/* Progress line */}
-            <div className="absolute left-5 top-0 w-0.5 h-full bg-gray-200" aria-hidden="true"></div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Order status */}
+        <div className="lg:col-span-2">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <h2 className="text-lg font-medium text-gray-900 mb-6">Order Status</h2>
             
-            {/* Steps */}
             <div className="relative space-y-8">
               {orderStatuses.map((status, index) => (
                 <div key={status.step} className="flex items-start">
@@ -130,7 +135,7 @@ const OrderTrackingPage: React.FC = () => {
                     {status.completed ? (
                       <Check size={18} />
                     ) : (
-                      <span className="text-gray-500">{index + 1}</span>
+                      status.icon
                     )}
                   </div>
                   <div className="ml-4">
@@ -148,169 +153,68 @@ const OrderTrackingPage: React.FC = () => {
           </div>
         </div>
         
-        {/* Main content based on fulfillment type */}
-        {isPickup ? (
-          <div className="border-t border-gray-200 pt-6">
-            <div className="flex items-start mb-6">
-              <Store size={24} className="text-blue-600 flex-shrink-0" />
-              <div className="ml-4">
-                <h3 className="font-medium text-gray-900">Pickup Details</h3>
-                <p className="text-gray-600 mt-1">SuperMart</p>
-                <p className="text-gray-600">123 Main St, Downtown</p>
-                <p className="text-gray-600 text-sm">Open until 9:00 PM</p>
-              </div>
-            </div>
+        {/* Order details */}
+        <div className="lg:col-span-1">
+          <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24">
+            <h2 className="text-lg font-medium text-gray-900 mb-6">Order Details</h2>
             
-            {currentStep >= 3 && (
-              <div className="bg-blue-50 p-4 rounded-lg mb-6">
-                <div className="flex">
-                  <QrCode size={60} className="text-blue-600" />
-                  <div className="ml-4">
-                    <h3 className="font-medium text-gray-900">Pickup QR Code</h3>
-                    <p className="text-sm text-gray-600 mb-2">
-                      Show this QR code to the store staff when you collect your order
-                    </p>
-                    <Button
-                      variant="outline"
-                      size="small"
-                    >
-                      Enlarge QR Code
-                    </Button>
+            {isPickup ? (
+              <div className="space-y-6">
+                <div className="flex items-center">
+                  <Store size={24} className="text-orange-500 mr-3" />
+                  <div>
+                    <h3 className="font-medium text-gray-900">Pickup Location</h3>
+                    <p className="text-sm text-gray-500">Store Name</p>
+                    <p className="text-sm text-gray-500">123 Main Street</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <QrCode size={24} className="text-blue-500 mr-3" />
+                  <div>
+                    <h3 className="font-medium text-gray-900">Pickup Code</h3>
+                    <p className="text-2xl font-bold text-gray-900">A1B2C3</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <Phone size={24} className="text-green-500 mr-3" />
+                  <div>
+                    <h3 className="font-medium text-gray-900">Store Contact</h3>
+                    <p className="text-sm text-gray-500">+1 (555) 123-4567</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="flex items-center">
+                  <Truck size={24} className="text-blue-500 mr-3" />
+                  <div>
+                    <h3 className="font-medium text-gray-900">Delivery Status</h3>
+                    <p className="text-sm text-gray-500">Your order is on the way</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <MapPin size={24} className="text-red-500 mr-3" />
+                  <div>
+                    <h3 className="font-medium text-gray-900">Delivery Address</h3>
+                    <p className="text-sm text-gray-500">123 Main Street</p>
+                    <p className="text-sm text-gray-500">Apartment 4B</p>
+                    <p className="text-sm text-gray-500">New York, NY 10001</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <PackageCheck size={24} className="text-purple-500 mr-3" />
+                  <div>
+                    <h3 className="font-medium text-gray-900">Estimated Delivery</h3>
+                    <p className="text-sm text-gray-500">30-45 minutes</p>
                   </div>
                 </div>
               </div>
             )}
-            
-            <div className="flex justify-center">
-              <Button
-                variant="primary"
-                size="medium"
-                icon={<MapPin size={18} />}
-              >
-                View Store Location
-              </Button>
-            </div>
           </div>
-        ) : (
-          <div className="border-t border-gray-200 pt-6">
-            <div className="flex items-start mb-6">
-              <MapPin size={24} className="text-blue-600 flex-shrink-0" />
-              <div className="ml-4">
-                <h3 className="font-medium text-gray-900">Delivery Address</h3>
-                <p className="text-gray-600 mt-1">123 Home St, Apartment 4B</p>
-                <p className="text-gray-600">New York, NY 10001</p>
-              </div>
-            </div>
-            
-            {currentStep >= 3 && (
-              <div className="bg-blue-50 p-4 rounded-lg mb-6">
-                <div className="flex">
-                  <Truck size={24} className="text-blue-600 flex-shrink-0" />
-                  <div className="ml-4">
-                    <h3 className="font-medium text-gray-900">Delivery Details</h3>
-                    <p className="text-sm text-gray-600">Estimated arrival in 15-20 minutes</p>
-                    <div className="flex items-center mt-2">
-                      <img 
-                        src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
-                        alt="Delivery Person" 
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                      <div className="ml-2">
-                        <p className="text-sm font-medium text-gray-900">John D.</p>
-                        <p className="text-xs text-gray-500">Your Delivery Partner</p>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="small"
-                        icon={<Phone size={14} />}
-                        className="ml-auto"
-                      >
-                        Call
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            <div className="flex justify-center">
-              {currentStep >= 3 && (
-                <Button
-                  variant="primary"
-                  size="medium"
-                  icon={<PackageCheck size={18} />}
-                >
-                  Track on Map
-                </Button>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-      
-      {/* Order summary card */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
-        
-        <div className="divide-y divide-gray-200">
-          <div className="py-3 flex">
-            <div className="flex-shrink-0 w-16 h-16 rounded-md overflow-hidden">
-              <img 
-                src="https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg"
-                alt="Smartphone X"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="ml-4 flex-1">
-              <h3 className="text-sm font-medium text-gray-900">Smartphone X</h3>
-              <p className="text-sm text-gray-500">Qty: 1</p>
-              <p className="text-sm font-medium text-gray-900 mt-1">$699.99</p>
-            </div>
-          </div>
-          
-          <div className="py-3 flex">
-            <div className="flex-shrink-0 w-16 h-16 rounded-md overflow-hidden">
-              <img 
-                src="https://images.pexels.com/photos/3394666/pexels-photo-3394666.jpeg"
-                alt="Wireless Headphones"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="ml-4 flex-1">
-              <h3 className="text-sm font-medium text-gray-900">Wireless Headphones</h3>
-              <p className="text-sm text-gray-500">Qty: 1</p>
-              <p className="text-sm font-medium text-gray-900 mt-1">$149.99</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="border-t border-gray-200 mt-4 pt-4">
-          <div className="flex justify-between text-sm text-gray-600 mb-1">
-            <span>Subtotal</span>
-            <span>$849.98</span>
-          </div>
-          <div className="flex justify-between text-sm text-gray-600 mb-1">
-            <span>Delivery Fee</span>
-            <span>{isPickup ? 'FREE' : '$4.99'}</span>
-          </div>
-          <div className="flex justify-between text-sm text-gray-600 mb-4">
-            <span>Tax</span>
-            <span>$85.00</span>
-          </div>
-          <div className="flex justify-between text-base font-medium text-gray-900">
-            <span>Total</span>
-            <span>${isPickup ? '934.98' : '939.97'}</span>
-          </div>
-        </div>
-        
-        <div className="mt-6">
-          <Button
-            variant="outline"
-            size="medium"
-            fullWidth
-          >
-            View Order Details
-          </Button>
         </div>
       </div>
     </main>
