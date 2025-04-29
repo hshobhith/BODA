@@ -196,12 +196,50 @@ const SearchResultsPage: React.FC = () => {
       {/* Show no results message */}
       {!isLoading && !error && products.length === 0 && stores.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-600">No results found.</p>
-          {!query && !categoryParam && location && (
-            <p className="text-gray-600 mt-2">
-              No stores found near your location. Try expanding the search radius or searching for specific items.
+          <div className="max-w-md mx-auto">
+            <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <MapPin className="h-8 w-8 text-gray-500" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Stores Found Nearby</h3>
+            <p className="text-gray-600 mb-6">
+              We couldn't find any stores in your immediate area. Here are some options:
             </p>
-          )}
+            <div className="space-y-4">
+              <Button
+                variant="primary"
+                size="large"
+                className="w-full"
+                onClick={() => {
+                  // Increase search radius by updating location context
+                  detectLocation();
+                }}
+              >
+                Search in a Larger Area
+              </Button>
+              <Button
+                variant="outline"
+                size="large"
+                className="w-full"
+                onClick={() => {
+                  // Navigate to all stores view
+                  window.location.href = '/search?category=all';
+                }}
+              >
+                View All Stores
+              </Button>
+              <Button
+                variant="outline"
+                size="large"
+                className="w-full"
+                onClick={() => {
+                  // Navigate to categories
+                  window.location.href = '/';
+                }}
+              >
+                Browse Categories
+              </Button>
+            </div>
+          </div>
         </div>
       )}
 
