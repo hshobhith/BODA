@@ -235,14 +235,37 @@ export const getFeaturedShops = (): Shop[] => {
 
 export const getNearbyStores = (userLocation: { lat: number; lng: number }): Shop[] => {
   console.log('User location:', userLocation);
-  const stores = shops.filter(shop => {
-    const distance = Math.sqrt(
-      Math.pow(shop.location.lat - userLocation.lat, 2) +
-      Math.pow(shop.location.lng - userLocation.lng, 2)
-    );
-    console.log(`Store ${shop.name} distance:`, distance);
-    return distance <= 0.5; // Increased threshold to 0.5 degrees (roughly 55km)
+  
+  // Validate user location
+  if (!userLocation || typeof userLocation.lat !== 'number' || typeof userLocation.lng !== 'number') {
+    console.error('Invalid user location provided');
+    return [];
+  }
+
+  // Calculate distances and filter stores
+  const stores = shops.map(shop => {
+    // Calculate distance in kilometers using Haversine formula
+    const R = 6371; // Earth's radius in km
+    const dLat = (shop.location.lat - userLocation.lat) * Math.PI / 180;
+    const dLng = (shop.location.lng - userLocation.lng) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(userLocation.lat * Math.PI / 180) * Math.cos(shop.location.lat * Math.PI / 180) * 
+      Math.sin(dLng/2) * Math.sin(dLng/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
+    
+    return {
+      ...shop,
+      distance: Number(distance.toFixed(1))
+    };
   });
-  console.log('Found nearby stores:', stores);
-  return stores;
+
+  // Filter stores within 10km radius and sort by distance
+  const nearbyStores = stores
+    .filter(shop => shop.distance <= 10)
+    .sort((a, b) => a.distance - b.distance);
+
+  console.log('Found nearby stores:', nearbyStores);
+  return nearbyStores;
 };
