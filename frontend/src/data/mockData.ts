@@ -7,7 +7,7 @@ const randomDistance = () => Number((Math.random() * 5 + 0.5).toFixed(1));
 export const shops: Shop[] = [
   {
     id: '1',
-    name: 'SuperMart',
+    name: 'Mart',
     address: '123 Main St, Downtown',
     location: { lat: 40.7128, lng: -74.006 },
     rating: 4.5,
