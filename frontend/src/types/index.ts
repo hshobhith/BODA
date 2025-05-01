@@ -34,6 +34,11 @@ export interface Shop {
   distance: number; // in kilometers
   categories: string[];
   isOpen: boolean;
+  images: {
+    id: number;
+    url: string;
+    isPrimary: boolean;
+  }[];
 }
 
 export interface Order {
