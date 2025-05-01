@@ -4,7 +4,7 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
 import SearchResultsPage from './pages/SearchResultsPage';
-import ProductDetailsPage from './pages/ProductDetailsPage';
+import ProductDetailPage from './pages/ProductDetailPage';
 import ShopDetailsPage from './pages/ShopDetailsPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
@@ -25,7 +25,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/search" element={<SearchResultsPage />} />
-                <Route path="/product/:productId" element={<ProductDetailsPage />} />
+                <Route path="/product/:productId" element={<ProductDetailPage />} />
                 <Route path="/shop/:shopId" element={<ShopDetailsPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
