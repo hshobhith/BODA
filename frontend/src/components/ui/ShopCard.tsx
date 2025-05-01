@@ -26,6 +26,17 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
             {shop.rating.toFixed(1)}
           </span>
         </div>
+
+        {/* Open/Closed status */}
+        <div className="absolute top-2 left-2">
+          <span className={`text-xs py-1 px-2 rounded flex items-center ${
+            shop.isOpen 
+              ? 'bg-green-100 text-green-800' 
+              : 'bg-red-100 text-red-800'
+          }`}>
+            {shop.isOpen ? 'Open' : 'Closed'}
+          </span>
+        </div>
       </div>
       
       {/* Shop Info */}

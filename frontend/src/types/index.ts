@@ -1,3 +1,13 @@
+export interface Review {
+  id: string;
+  productId: string;
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -9,6 +19,7 @@ export interface Product {
   rating: number;
   deliveryAvailable: boolean;
   pickupAvailable: boolean;
+  reviews?: Review[];
 }
 
 export interface Shop {
@@ -22,6 +33,7 @@ export interface Shop {
   rating: number;
   distance: number; // in kilometers
   categories: string[];
+  isOpen: boolean;
 }
 
 export interface Order {
@@ -51,4 +63,5 @@ export type Category = 'groceries' | 'electronics' | 'clothes' | 'footwear' | 'h
 export interface CartItem {
   product: Product;
   quantity: number;
+  deliveryMethod: 'delivery' | 'pickup';
 }
