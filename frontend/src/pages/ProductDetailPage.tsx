@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Star, ShoppingCart, Minus, Plus, Clock, MapPin, Store } from 'lucide-react';
+import { Star, ShoppingCart, Minus, Plus, Clock, MapPin, Store, Truck, Package, ArrowLeft } from 'lucide-react';
 import ReviewForm from '../components/ui/ReviewForm';
 import { Product, Review } from '../types';
 import { products, reviews } from '../data/mockData';
@@ -48,14 +48,25 @@ const ProductDetailPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center text-gray-600 hover:text-indigo-600 mb-6"
+      >
+        <ArrowLeft className="h-5 w-5 mr-2" />
+        Back
+      </button>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Product Images */}
         <div className="space-y-4">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-96 object-cover rounded-lg"
-          />
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-96 object-cover"
+            />
+          </div>
         </div>
 
         {/* Product Info */}
@@ -89,6 +100,26 @@ const ProductDetailPage: React.FC = () => {
             </div>
           )}
 
+          {/* Delivery Options */}
+          <div className="bg-white p-4 rounded-lg border">
+            <h3 className="font-medium text-gray-900 mb-3">Delivery Options</h3>
+            <div className="space-y-3">
+              {product.deliveryAvailable && (
+                <div className="flex items-center text-gray-600">
+                  <Truck className="h-5 w-5 mr-2 text-indigo-600" />
+                  <span>Delivery Available</span>
+                </div>
+              )}
+              {product.pickupAvailable && (
+                <div className="flex items-center text-gray-600">
+                  <Package className="h-5 w-5 mr-2 text-indigo-600" />
+                  <span>Pickup Available</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Rating and Reviews */}
           <div className="flex items-center space-x-2">
             <div className="flex">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -112,8 +143,12 @@ const ProductDetailPage: React.FC = () => {
             </span>
           </div>
 
+          {/* Price and Add to Cart */}
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
+            <div>
+              <span className="text-2xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
+              <p className="text-sm text-gray-500">In stock</p>
+            </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center border rounded-md">
                 <button
@@ -132,7 +167,7 @@ const ProductDetailPage: React.FC = () => {
               </div>
               <button 
                 onClick={handleAddToCart}
-                className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200"
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
                 Add to Cart
@@ -140,9 +175,10 @@ const ProductDetailPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Write Review Button */}
           <button
             onClick={() => setShowReviewForm(true)}
-            className="w-full py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            className="w-full py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
           >
             Write a Review
           </button>
@@ -154,46 +190,50 @@ const ProductDetailPage: React.FC = () => {
         <div className="mt-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Reviews</h2>
           <div className="space-y-6">
-            {productReviews.map((review) => (
-              <div key={review.id} className="border-b pb-6">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-600 font-medium">
-                        {review.userName.charAt(0)}
-                      </span>
+            {productReviews.length > 0 ? (
+              productReviews.map((review) => (
+                <div key={review.id} className="border-b pb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-gray-600 font-medium">
+                          {review.userName.charAt(0)}
+                        </span>
+                      </div>
+                      <div className="ml-3">
+                        <p className="font-medium text-gray-900">{review.userName}</p>
+                        <p className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</p>
+                      </div>
                     </div>
-                    <div className="ml-3">
-                      <p className="font-medium text-gray-900">{review.userName}</p>
-                      <p className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</p>
+                    <div className="flex">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={`h-5 w-5 ${
+                            star <= review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                          }`}
+                        />
+                      ))}
                     </div>
                   </div>
-                  <div className="flex">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`h-5 w-5 ${
-                          star <= review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
-                  </div>
+                  <p className="text-gray-600 mt-2">{review.comment}</p>
+                  {review.images && review.images.length > 0 && (
+                    <div className="grid grid-cols-4 gap-4 mt-4">
+                      {review.images.map((image, index) => (
+                        <img
+                          key={index}
+                          src={image}
+                          alt={`Review image ${index + 1}`}
+                          className="w-full h-24 object-cover rounded-lg"
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <p className="text-gray-600 mt-2">{review.comment}</p>
-                {review.images && review.images.length > 0 && (
-                  <div className="grid grid-cols-4 gap-4 mt-4">
-                    {review.images.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image}
-                        alt={`Review image ${index + 1}`}
-                        className="w-full h-24 object-cover rounded-lg"
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-gray-600 text-center py-4">No reviews yet. Be the first to review this product!</p>
+            )}
           </div>
         </div>
       )}
@@ -206,7 +246,7 @@ const ProductDetailPage: React.FC = () => {
             {shopProducts.map((relatedProduct) => (
               <div
                 key={relatedProduct.id}
-                className="bg-white rounded-lg shadow overflow-hidden cursor-pointer"
+                className="bg-white rounded-lg shadow overflow-hidden cursor-pointer hover:shadow-md transition-shadow duration-200"
                 onClick={() => navigate(`/product/${relatedProduct.id}`)}
               >
                 <img
