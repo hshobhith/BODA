@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 
 interface SellerLoginProps {
   onLogin: (credentials: { email: string; password: string }) => void;
-  onRegister: () => void;
+  onRegister: (data: {
+    password: string;
+    storeName: string;
+    phoneNumber: string;
+    address: string;
+  }) => void;
 }
 
 const SellerLogin: React.FC<SellerLoginProps> = ({ onLogin, onRegister }) => {

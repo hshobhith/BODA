@@ -14,6 +14,11 @@ export const shops: Shop[] = [
     distance: randomDistance(),
     categories: ['groceries', 'home'],
     isOpen: true,
+    images: [
+      { id: 1, url: 'https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg', isPrimary: true },
+      { id: 2, url: 'https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg', isPrimary: false },
+      { id: 3, url: 'https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg', isPrimary: false }
+    ]
   },
   {
     id: '2',
@@ -24,6 +29,11 @@ export const shops: Shop[] = [
     distance: randomDistance(),
     categories: ['electronics'],
     isOpen: true,
+    images: [
+      { id: 1, url: 'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg', isPrimary: true },
+      { id: 2, url: 'https://images.pexels.com/photos/3394666/pexels-photo-3394666.jpeg', isPrimary: false },
+      { id: 3, url: 'https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg', isPrimary: false }
+    ]
   },
   {
     id: '3',
@@ -34,6 +44,11 @@ export const shops: Shop[] = [
     distance: randomDistance(),
     categories: ['clothes', 'footwear'],
     isOpen: false,
+    images: [
+      { id: 1, url: 'https://images.pexels.com/photos/1082529/pexels-photo-1082529.jpeg', isPrimary: true },
+      { id: 2, url: 'https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg', isPrimary: false },
+      { id: 3, url: 'https://images.pexels.com/photos/1082529/pexels-photo-1082529.jpeg', isPrimary: false }
+    ]
   },
   {
     id: '4',
@@ -44,6 +59,11 @@ export const shops: Shop[] = [
     distance: randomDistance(),
     categories: ['groceries'],
     isOpen: true,
+    images: [
+      { id: 1, url: 'https://images.pexels.com/photos/47305/bananas-banana-shrub-fruits-yellow-47305.jpeg', isPrimary: true },
+      { id: 2, url: 'https://images.pexels.com/photos/162712/egg-white-food-protein-162712.jpeg', isPrimary: false },
+      { id: 3, url: 'https://images.pexels.com/photos/557659/pexels-photo-557659.jpeg', isPrimary: false }
+    ]
   },
   {
     id: '5',
@@ -54,6 +74,11 @@ export const shops: Shop[] = [
     distance: randomDistance(),
     categories: ['electronics'],
     isOpen: false,
+    images: [
+      { id: 1, url: 'https://images.pexels.com/photos/3394666/pexels-photo-3394666.jpeg', isPrimary: true },
+      { id: 2, url: 'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg', isPrimary: false },
+      { id: 3, url: 'https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg', isPrimary: false }
+    ]
   },
 ];
 
