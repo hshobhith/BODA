@@ -50,6 +50,36 @@ interface StoreImage {
   isPrimary: boolean;
 }
 
+interface SellerData {
+  storeName: string;
+  storeDescription: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
+  deliveryOptions: {
+    delivery: boolean;
+    deliveryBoyName: string;
+    deliveryBoyPhone: string;
+    deliveryBoyAddress: string;
+    pickup: boolean;
+    pickupCode: string;
+  };
+  operatingHours: {
+    openTime: string;
+    closeTime: string;
+    openAllDays: boolean;
+    operatingDays: {
+      monday: boolean;
+      tuesday: boolean;
+      wednesday: boolean;
+      thursday: boolean;
+      friday: boolean;
+      saturday: boolean;
+      sunday: boolean;
+    }
+  };
+}
+
 const SellerDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [showAddProduct, setShowAddProduct] = useState(false);
@@ -86,7 +116,7 @@ const SellerDashboard: React.FC = () => {
       ]
     }
   ]);
-  const [sellerData, setSellerData] = useState({
+  const [sellerData, setSellerData] = useState<SellerData>({
     storeName: 'My Store',
     storeDescription: 'A great store with amazing products',
     address: '123 Main St, City, Country',
@@ -95,8 +125,10 @@ const SellerDashboard: React.FC = () => {
     deliveryOptions: {
       delivery: true,
       deliveryBoyName: 'John Doe',
+      deliveryBoyPhone: '+1234567890',
       deliveryBoyAddress: '456 Delivery St, City, Country',
       pickup: true,
+      pickupCode: 'A1B2C3'
     },
     operatingHours: {
       openTime: '09:00',
