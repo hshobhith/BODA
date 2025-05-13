@@ -13,11 +13,35 @@ interface OrderStatus {
   icon: React.ReactNode;
 }
 
+interface DeliveryInfo {
+  deliveryBoyName: string;
+  deliveryBoyPhone: string;
+  deliveryBoyAddress: string;
+}
+
+interface ShopInfo {
+  name: string;
+  address: string;
+  phone: string;
+  pickupCode: string;
+}
+
 const OrderTrackingPage: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const { items } = useCart();
   const [currentStep, setCurrentStep] = useState(1);
   const [isPickup, setIsPickup] = useState(false);
+  const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>({
+    deliveryBoyName: 'John Doe',
+    deliveryBoyPhone: '+1234567890',
+    deliveryBoyAddress: '456 Delivery St, City, Country'
+  });
+  const [shopInfo, setShopInfo] = useState<ShopInfo>({
+    name: 'My Store',
+    address: '123 Main St, City, Country',
+    phone: '+1234567890',
+    pickupCode: 'A1B2C3'
+  });
   
   // Determine if order is pickup based on cart items
   useEffect(() => {
@@ -163,17 +187,20 @@ const OrderTrackingPage: React.FC = () => {
                 <div className="flex items-center">
                   <Store size={24} className="text-orange-500 mr-3" />
                   <div>
-                    <h3 className="font-medium text-gray-900">Pickup Location</h3>
-                    <p className="text-sm text-gray-500">Store Name</p>
-                    <p className="text-sm text-gray-500">123 Main Street</p>
+                    <h3 className="font-medium text-gray-900">Store Information</h3>
+                    <p className="text-sm text-gray-500">{shopInfo.name}</p>
+                    <p className="text-sm text-gray-500">{shopInfo.address}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center">
                   <QrCode size={24} className="text-blue-500 mr-3" />
                   <div>
-                    <h3 className="font-medium text-gray-900">Pickup Code</h3>
-                    <p className="text-2xl font-bold text-gray-900">A1B2C3</p>
+                    <h3 className="font-medium text-gray-900">Scanner Code</h3>
+                    <div className="bg-gray-100 p-3 rounded-lg">
+                      <p className="text-2xl font-bold text-gray-900 text-center">{shopInfo.pickupCode}</p>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-2">Show this code to the store staff for pickup verification</p>
                   </div>
                 </div>
                 
@@ -181,7 +208,7 @@ const OrderTrackingPage: React.FC = () => {
                   <Phone size={24} className="text-green-500 mr-3" />
                   <div>
                     <h3 className="font-medium text-gray-900">Store Contact</h3>
-                    <p className="text-sm text-gray-500">+1 (555) 123-4567</p>
+                    <p className="text-sm text-gray-500">{shopInfo.phone}</p>
                   </div>
                 </div>
               </div>
@@ -199,9 +226,16 @@ const OrderTrackingPage: React.FC = () => {
                   <MapPin size={24} className="text-red-500 mr-3" />
                   <div>
                     <h3 className="font-medium text-gray-900">Delivery Address</h3>
-                    <p className="text-sm text-gray-500">123 Main Street</p>
-                    <p className="text-sm text-gray-500">Apartment 4B</p>
-                    <p className="text-sm text-gray-500">New York, NY 10001</p>
+                    <p className="text-sm text-gray-500">{deliveryInfo.deliveryBoyAddress}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center">
+                  <Phone size={24} className="text-green-500 mr-3" />
+                  <div>
+                    <h3 className="font-medium text-gray-900">Delivery Boy Contact</h3>
+                    <p className="text-sm text-gray-500">{deliveryInfo.deliveryBoyName}</p>
+                    <p className="text-sm text-gray-500">{deliveryInfo.deliveryBoyPhone}</p>
                   </div>
                 </div>
                 

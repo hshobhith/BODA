@@ -11,7 +11,8 @@ import {
   Edit,
   Trash2,
   Plus,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Settings
 } from 'lucide-react';
 import AddProduct from './AddProduct';
 import SellerSettings from './SellerSettings';
@@ -33,7 +34,7 @@ interface Order {
   id: number;
   customer: string;
   amount: number;
-  status: 'Pending' | 'Processing' | 'Delivered' | 'Cancelled';
+  status: string;
   date: string;
   items: {
     productId: number;
@@ -47,6 +48,36 @@ interface StoreImage {
   id: number;
   url: string;
   isPrimary: boolean;
+}
+
+interface SellerData {
+  storeName: string;
+  storeDescription: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
+  deliveryOptions: {
+    delivery: boolean;
+    deliveryBoyName: string;
+    deliveryBoyPhone: string;
+    deliveryBoyAddress: string;
+    pickup: boolean;
+    pickupCode: string;
+  };
+  operatingHours: {
+    openTime: string;
+    closeTime: string;
+    openAllDays: boolean;
+    operatingDays: {
+      monday: boolean;
+      tuesday: boolean;
+      wednesday: boolean;
+      thursday: boolean;
+      friday: boolean;
+      saturday: boolean;
+      sunday: boolean;
+    }
+  };
 }
 
 const SellerDashboard: React.FC = () => {
@@ -85,7 +116,7 @@ const SellerDashboard: React.FC = () => {
       ]
     }
   ]);
-  const [sellerData, setSellerData] = useState({
+  const [sellerData, setSellerData] = useState<SellerData>({
     storeName: 'My Store',
     storeDescription: 'A great store with amazing products',
     address: '123 Main St, City, Country',
@@ -94,8 +125,10 @@ const SellerDashboard: React.FC = () => {
     deliveryOptions: {
       delivery: true,
       deliveryBoyName: 'John Doe',
+      deliveryBoyPhone: '+1234567890',
       deliveryBoyAddress: '456 Delivery St, City, Country',
       pickup: true,
+      pickupCode: 'A1B2C3'
     },
     operatingHours: {
       openTime: '09:00',
@@ -112,6 +145,16 @@ const SellerDashboard: React.FC = () => {
       }
     },
   });
+
+  const handleDeleteProduct = (id: number) => {
+    setProducts(products.filter(product => product.id !== id));
+  };
+
+  const handleUpdateOrderStatus = (id: number, newStatus: string) => {
+    setOrders(orders.map(order => 
+      order.id === id ? { ...order, status: newStatus } : order
+    ));
+  };
 
   const handleSaveSettings = (newData: any) => {
     setSellerData(newData);
@@ -145,12 +188,6 @@ const SellerDashboard: React.FC = () => {
     setShowAddProduct(false);
   };
 
-  const handleUpdateOrderStatus = (orderId: number, newStatus: Order['status']) => {
-    setOrders(orders.map(order => 
-      order.id === orderId ? { ...order, status: newStatus } : order
-    ));
-  };
-
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const newImage: StoreImage = {
@@ -171,48 +208,6 @@ const SellerDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Store Images Section */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">Store Images</h2>
-          <label className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 cursor-pointer">
-            <ImageIcon className="h-5 w-5 mr-2" />
-            Upload Image
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-            />
-          </label>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {storeImages.map((image) => (
-            <div key={image.id} className="relative group">
-              <img
-                src={image.url}
-                alt={`Store image ${image.id}`}
-                className={`w-full h-48 object-cover rounded-lg ${
-                  image.isPrimary ? 'ring-2 ring-indigo-500' : ''
-                }`}
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100">
-                <button
-                  onClick={() => setPrimaryImage(image.id)}
-                  className={`px-3 py-1 rounded-md ${
-                    image.isPrimary
-                      ? 'bg-indigo-600 text-white'
-                      : 'bg-white text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  {image.isPrimary ? 'Primary' : 'Set as Primary'}
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-lg shadow p-6">
@@ -233,7 +228,7 @@ const SellerDashboard: React.FC = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Orders</p>
-              <p className="text-2xl font-semibold text-gray-900">45</p>
+              <p className="text-2xl font-semibold text-gray-900">{orders.length}</p>
             </div>
           </div>
         </div>
@@ -251,196 +246,209 @@ const SellerDashboard: React.FC = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="p-3 bg-yellow-100 rounded-full">
-              <Users className="h-6 w-6 text-yellow-600" />
+              <Star className="h-6 w-6 text-yellow-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Active Customers</p>
-              <p className="text-2xl font-semibold text-gray-900">89</p>
+              <p className="text-sm font-medium text-gray-600">Store Rating</p>
+              <p className="text-2xl font-semibold text-gray-900">4.8</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content Tabs */}
+      {/* Tabs */}
       <div className="bg-white rounded-lg shadow">
         <Tab.Group selectedIndex={activeTab} onChange={setActiveTab}>
-          <Tab.List className="flex border-b border-gray-200">
+          <Tab.List className="flex border-b">
             <Tab
               className={({ selected }) =>
-                `px-6 py-3 text-sm font-medium border-b-2 ${
+                `px-4 py-2 text-sm font-medium border-b-2 ${
                   selected
                     ? 'border-indigo-500 text-indigo-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`
               }
             >
-              Settings
+              <div className="flex items-center">
+                <Package className="h-4 w-4 mr-2" />
+                Products
+              </div>
             </Tab>
             <Tab
               className={({ selected }) =>
-                `px-6 py-3 text-sm font-medium border-b-2 ${
+                `px-4 py-2 text-sm font-medium border-b-2 ${
                   selected
                     ? 'border-indigo-500 text-indigo-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`
               }
             >
-              Products
+              <div className="flex items-center">
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Orders
+              </div>
             </Tab>
             <Tab
               className={({ selected }) =>
-                `px-6 py-3 text-sm font-medium border-b-2 ${
+                `px-4 py-2 text-sm font-medium border-b-2 ${
                   selected
                     ? 'border-indigo-500 text-indigo-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`
               }
             >
-              Orders
+              <div className="flex items-center">
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </div>
             </Tab>
           </Tab.List>
 
           <Tab.Panels className="p-6">
-            {/* Settings Panel */}
-            <Tab.Panel>
-              <SellerSettings initialData={sellerData} onSave={handleSaveSettings} />
-            </Tab.Panel>
-
             {/* Products Panel */}
             <Tab.Panel>
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold text-gray-900">Products Management</h2>
-                  <button
-                    onClick={() => setShowAddProduct(true)}
-                    className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-                  >
-                    <Plus className="h-5 w-5 mr-2" />
-                    Add Product
-                  </button>
-                </div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-lg font-medium text-gray-900">Products</h2>
+                <button
+                  onClick={() => setShowAddProduct(true)}
+                  className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Product
+                </button>
+              </div>
 
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sales</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sales</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {products.map((product) => (
+                      <tr key={product.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10">
+                              <img
+                                className="h-10 w-10 rounded-full"
+                                src={product.images?.[0] || 'https://via.placeholder.com/40'}
+                                alt=""
+                              />
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                              <div className="text-sm text-gray-500">{product.category}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">${product.price.toFixed(2)}</div>
+                          {product.discountPrice && (
+                            <div className="text-sm text-gray-500 line-through">
+                              ${product.discountPrice.toFixed(2)}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{product.stock}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{product.sales}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button className="text-indigo-600 hover:text-indigo-900 mr-3">
+                            <Edit className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProduct(product.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {products.map((product) => (
-                        <tr key={product.id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                            {product.description && (
-                              <div className="text-sm text-gray-500">{product.description}</div>
-                            )}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">${product.price}</div>
-                            {product.discountPrice && (
-                              <div className="text-sm text-red-600 line-through">${product.discountPrice}</div>
-                            )}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                              product.stock > 10 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                            }`}>
-                              {product.stock}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {product.sales}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button className="text-indigo-600 hover:text-indigo-900 mr-3">
-                              <Edit className="h-5 w-5" />
-                            </button>
-                            <button className="text-red-600 hover:text-red-900">
-                              <Trash2 className="h-5 w-5" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </Tab.Panel>
 
             {/* Orders Panel */}
             <Tab.Panel>
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-gray-900">Orders Management</h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {orders.map((order) => (
+                      <tr key={order.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          #{order.id}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {order.customer}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          ${order.amount.toFixed(2)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            order.status === 'Delivered'
+                              ? 'bg-green-100 text-green-800'
+                              : order.status === 'Processing'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {order.date}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button
+                            onClick={() => handleUpdateOrderStatus(order.id, 'Delivered')}
+                            className="text-indigo-600 hover:text-indigo-900"
+                          >
+                            Update Status
+                          </button>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {orders.map((order) => (
-                        <tr key={order.id}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            #{order.id}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {order.customer}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            ${order.amount}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <select
-                              value={order.status}
-                              onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value as Order['status'])}
-                              className={`text-sm font-medium rounded-full px-2 py-1 ${
-                                order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
-                                order.status === 'Processing' ? 'bg-yellow-100 text-yellow-800' :
-                                order.status === 'Pending' ? 'bg-blue-100 text-blue-800' :
-                                'bg-red-100 text-red-800'
-                              }`}
-                            >
-                              <option value="Pending">Pending</option>
-                              <option value="Processing">Processing</option>
-                              <option value="Delivered">Delivered</option>
-                              <option value="Cancelled">Cancelled</option>
-                            </select>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {order.date}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button className="text-indigo-600 hover:text-indigo-900">
-                              View Details
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
               </div>
+            </Tab.Panel>
+
+            {/* Settings Panel */}
+            <Tab.Panel>
+              <SellerSettings initialData={sellerData} onSave={handleSaveSettings} />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
       </div>
 
+      {/* Add Product Modal */}
       {showAddProduct && (
-        <AddProduct
-          onClose={() => setShowAddProduct(false)}
-          onSave={handleAddProduct}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+            <AddProduct onClose={() => setShowAddProduct(false)} onSave={handleAddProduct} />
+          </div>
+        </div>
       )}
     </div>
   );

@@ -30,26 +30,12 @@ const SellerPortal: React.FC = () => {
         {!isLoggedIn ? (
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
             <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Seller Portal</h1>
-            <div className="flex justify-center space-x-4 mb-6">
+            <div className="flex justify-center mb-6">
               <button
-                onClick={() => setIsRegistering(false)}
-                className={`px-4 py-2 rounded-md ${
-                  !isRegistering
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                onClick={() => setIsRegistering(!isRegistering)}
+                className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
               >
-                Login
-              </button>
-              <button
-                onClick={() => setIsRegistering(true)}
-                className={`px-4 py-2 rounded-md ${
-                  isRegistering
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Register
+                {isRegistering ? 'Back to Login' : 'Register New Account'}
               </button>
             </div>
             {!isRegistering ? (
