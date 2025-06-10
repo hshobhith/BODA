@@ -5,6 +5,7 @@ export interface Review {
   userName: string;
   rating: number;
   comment: string;
+  images?: string[]; // Array of image URLs
   createdAt: string;
 }
 
@@ -20,6 +21,25 @@ export interface Product {
   deliveryAvailable: boolean;
   pickupAvailable: boolean;
   reviews?: Review[];
+  store?: {
+    id: number;
+    name: string;
+    address: string;
+    operatingHours: {
+      openTime: string;
+      closeTime: string;
+      openAllDays: boolean;
+      operatingDays: {
+        monday: boolean;
+        tuesday: boolean;
+        wednesday: boolean;
+        thursday: boolean;
+        friday: boolean;
+        saturday: boolean;
+        sunday: boolean;
+      };
+    };
+  };
 }
 
 export interface Shop {

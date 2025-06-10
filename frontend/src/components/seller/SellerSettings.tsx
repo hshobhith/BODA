@@ -12,6 +12,8 @@ interface SellerSettingsProps {
       deliveryBoyName: string;
       deliveryBoyAddress: string;
       pickup: boolean;
+      deliveryBoyPhone: string;
+      pickupCode: string;
     };
     operatingHours: {
       openTime: string;
@@ -226,6 +228,21 @@ const SellerSettings: React.FC<SellerSettingsProps> = ({ initialData, onSave }) 
                 </div>
 
                 <div>
+                  <label htmlFor="deliveryBoyPhone" className="block text-sm font-medium text-gray-700">
+                    Delivery Boy Phone
+                  </label>
+                  <input
+                    type="tel"
+                    id="deliveryBoyPhone"
+                    name="deliveryOptions.deliveryBoyPhone"
+                    value={formData.deliveryOptions.deliveryBoyPhone}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100"
+                  />
+                </div>
+
+                <div>
                   <label htmlFor="deliveryBoyAddress" className="block text-sm font-medium text-gray-700">
                     Delivery Boy Address
                   </label>
@@ -256,6 +273,46 @@ const SellerSettings: React.FC<SellerSettingsProps> = ({ initialData, onSave }) 
                 Pickup Available
               </label>
             </div>
+
+            {formData.deliveryOptions.pickup && (
+              <div className="ml-6 space-y-4">
+                <div>
+                  <label htmlFor="pickupCode" className="block text-sm font-medium text-gray-700">
+                    Pickup Code
+                  </label>
+                  <div className="mt-1 flex rounded-md shadow-sm">
+                    <input
+                      type="text"
+                      id="pickupCode"
+                      name="deliveryOptions.pickupCode"
+                      value={formData.deliveryOptions.pickupCode}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+                        handleChange({
+                          target: {
+                            name: 'deliveryOptions.pickupCode',
+                            value: newCode
+                          }
+                        } as React.ChangeEvent<HTMLInputElement>);
+                      }}
+                      disabled={!isEditing}
+                      className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-100"
+                    >
+                      Generate New Code
+                    </button>
+                  </div>
+                  <p className="mt-2 text-sm text-gray-500">
+                    This code will be shown to customers for order pickup verification
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
