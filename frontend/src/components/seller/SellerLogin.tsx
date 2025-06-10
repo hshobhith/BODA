@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 interface SellerLoginProps {
   onLogin: (credentials: { email: string; password: string }) => void;
@@ -15,6 +16,8 @@ const SellerLogin: React.FC<SellerLoginProps> = ({ onLogin, onRegister }) => {
     email: '',
     password: '',
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -24,13 +27,36 @@ const SellerLogin: React.FC<SellerLoginProps> = ({ onLogin, onRegister }) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin({ email: formData.email, password: formData.password });
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/seller/login', formData);
+      const { token, seller } = response.data;
+      
+      // Store token in localStorage
+      localStorage.setItem('sellerToken', token);
+      localStorage.setItem('sellerData', JSON.stringify(seller));
+      
+      // Call the onLogin prop with the credentials
+      onLogin({ email: formData.email, password: formData.password });
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'An error occurred during login');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="space-y-6">
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -71,9 +97,12 @@ const SellerLogin: React.FC<SellerLoginProps> = ({ onLogin, onRegister }) => {
         <div>
           <button
             type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            disabled={loading}
+            className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            Sign in
+            {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </div>
 
